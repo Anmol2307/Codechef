@@ -152,10 +152,15 @@ void insert(trie_t *pTrie, string key)
         // printf("%d %s\n",level,ans.c_str());
         pCrawl = pCrawl->children[1];
       }
-      else if (pCrawl->children[0]){
+      else if (index == 1 && pCrawl->children[0]){
         ans.push_back('0');
         // printf("%d %s\n",level,ans.c_str());
         pCrawl = pCrawl->children[0];
+      }
+      else if (index==0) {
+        ans.push_back('0');
+        if (pCrawl->children[0]) pCrawl = pCrawl->children[0];
+        else if (pCrawl->children[1]) pCrawl = pCrawl->children[1];
       }
     }
 
@@ -338,8 +343,6 @@ int main  () {
     // }
   // exit(0);
   
-  
-
   trie_t trie;
  
   initialize(&trie);
