@@ -73,16 +73,19 @@ inline void inp(int &n ) {//fast input function
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-bool contains (int* arr, int elem, int size) {
-  for (int i = 0; i < size; i++) {
-    if (arr[i]==elem) {
+int * table;
+int * arr;
+int n,m;
+bool contains (int elem) {
+  for (int i = 0; i < n; i++) {
+    if (table[i]==elem) {
       return true;
     }
   }
   return false;
 }
 
-int findSeat (int* table, int* arr, int n, int m, int place) {
+int findSeat (int place) {
   map<int,int> mymap;
   int notPresent = -1;
   
@@ -90,25 +93,27 @@ int findSeat (int* table, int* arr, int n, int m, int place) {
     bool p=false;
     for (int j = place+1; j < m; j++) {
       if (arr[j] == table[i]) {
-        if (mymap.count(i) == 0) mymap[i] = j;
-        else mymap[i] = max(mymap[i],j);
-        p = true;
+        if (!p) p = true;
+        if (mymap.count(i) == 0) {
+          mymap[i] = j;
+          break;
+        }
       }
     }
     if (!p) notPresent = i;
   }
 
   map<int,int>::iterator it;
-  int minindex = -1;
-  int min = -1;
+  int maxindex = -1;
+  int max = -1;
   if (notPresent == -1) {
     for (it = mymap.begin(); it != mymap.end(); it++) {
-      if (it->second < min) {
-        minindex = it->first;
-        min = it->second;
+      if (it->second > max) {
+        maxindex = it->first;
+        max = it->second;
       }
     }
-    return minindex;
+    return maxindex;
   }
   else {
     return notPresent;
@@ -120,22 +125,23 @@ int main () {
   inp(t);
 
   while (t--) {
-    int n,m;
     inp(n);inp(m);
-    int arr[m];
-    int table[n];
+    arr = new int[m];
+    table = new int[n];
     int ans = 0;
     int seats = 0;
     for (int i = 0; i < m ; i++) {
       inp(arr[i]);
     }
     for (int i = 0; i < m; i++) {
-      if (!contains(table,arr[i],n) && seats < n) {
+      if (!contains(arr[i]) && seats < n) {
         ans++;
         table[seats++] = arr[i];
       }
-      else if (!contains(table,arr[i],n)) {
-        int s = findSeat(table,arr,n,m,i);
+      else if (!contains(arr[i])) {
+        int s = findSeat(i);
+        // printf("%d %d\n",i,s);
+        // exit(0);
         ans++;
         table[s]=arr[i];
       }
