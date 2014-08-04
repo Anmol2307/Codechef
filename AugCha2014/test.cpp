@@ -1,14 +1,16 @@
-//@Author :Ritesh Kumar Gupta
 #include <stdio.h>
 #include <vector>
 #include <algorithm>
 #include <vector>
 #include <queue>
 #include <iostream>
+
 using namespace std;
+
 vector<vector< pair<int,int> > >GRAPH(100001);
 vector<vector<int> >allPaths;
 int m = 100000;
+
 // inline void print_path(vector<int>path)
 // {
 //     cout<<"[ ";
@@ -18,6 +20,7 @@ int m = 100000;
 //     }
 //     cout<<"]"<<endl;
 // }
+
 bool isadjacency_node_not_present_in_current_path(int node,vector<int>path)
 {
     for(int i=0;i<path.size();++i)
@@ -27,6 +30,7 @@ bool isadjacency_node_not_present_in_current_path(int node,vector<int>path)
     }
     return true;
 }
+
 void findpaths(int source ,int target ,int totalnode,int totaledge)
 {
     vector<int>path;
