@@ -74,41 +74,67 @@ inline void inp(int &n ) {//fast input function
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
+bool matrix[11][101];
+int dp[1024][101];
+int n;
 
+int recurse (int num, int index) {
+
+  if (index > 100) {
+    return (num%(1<<11)==0);
+  }
+  if (dp[num][index] != -1) return dp[num][index];
+
+  int val = recurse(num,index+1);
+  bool tshirtPre[11];
+  bool tshirtNum[11];
+
+  for (int i = 1; i <= n; i++) {
+    tshirtPre[i] = matrix[i][index];
+    tshirtNum[i] = (num>>(i-1))%2;
+  }
+
+  for (int i = 1; i <= n; i++) {
+    if (tshirtPre[i] && tshirtNum[i]) {
+      val =  (val+recurse(num - (1<<(i-1)),index+1))%mod;
+    }
+  }
+  // printf("%d %d %d\n",num,index,val);
+  dp[num][index] = val;
+  return val;
+}
 
 int main () {
   int t;
   inp(t);
 
   while (t--) {
-    int n;
     inp(n);
 
-    vector<vector <int> > vec(n);
+    for (int i = 0; i < 11; i++) {
+      for (int j = 0; j < 101; j++){
+        matrix[i][j] = false;
+      }
+    }
 
-    for (int i = 0; i < n; i++) {
+    for (int i = 1; i <= n; i++) {
       string line;
       getline(cin, line);
       istringstream this_line(line);
       istream_iterator<int> begin(this_line), end;
       vector<int> values(begin, end);
-      sort(values.begin(),values.end());
-      vec[i] = values;
-    }
-    int ans = 0;
-    for (int i = 0; i < vec[0].size(); i++) {
-      int pro = 1;
-      for (int j = 1; j < n; j++) {
-        if (binary_search(vec[j].begin(),vec[j].end(),vec[0][i])) {
-          pro  = (pro * (vec[j].size()-1))%mod;
-        }
-        else {
-          pro  = (pro * vec[j].size())%mod;
-        }
+      for (int j = 0; j < values.size(); j++) {
+        matrix[i][values[j]] = true;
       }
-      ans = (ans+ pro)%mod;
     }
-    printf("%d\n",ans);
 
+    for (int i = 0; i < 1024; i++) {
+      for (int j = 0; j < 101; j++) {
+        dp[i][j] = -1;
+      }
+    }
+
+    int ans = recurse((1<<n)-1,1);
+    printf("%d\n",ans);
   }
 }
