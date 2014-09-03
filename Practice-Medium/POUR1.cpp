@@ -49,4 +49,4 @@ int main () {
     else if (c%gcd(a,b) != 0) printf("%d\n",-1);
     else printf("%d\n",min(find(a,b,c), find(b,a,c))); 
   }
-}
+}                                                                                                                                                                                                                                                                                                                                                                                                                                           
