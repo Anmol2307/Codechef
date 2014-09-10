@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
-
+ 
 using namespace std;
-
+ 
 inline void inp(int &n ) {//fast input function
     n=0;
     int ch=getchar(),sign=1;
@@ -10,30 +10,30 @@ inline void inp(int &n ) {//fast input function
         n=(n<<3)+(n<<1)+ ch-'0', ch=getchar();
     n=n*sign;
 }
-
+ 
 typedef long long int LL;
 typedef unsigned long long llu;
 llu n, m;
-
-
+ 
+ 
 llu find (llu st) {
     int nm = 30*m;
-    LL start = (((st%nm)*(st%nm))+ st)%nm;
-    start = (start*((2*(st%nm))+1))%nm;
-    LL a = ((3*((st%nm)*(st%nm))) + (3*st) - 1);
+    LL start = (((st%nm)*(st%nm))%nm + st%nm)%nm;
+    start = (start*((2*(st%nm))%nm+1)%nm)%nm;
+    LL a = ((3*((st%nm)*(st%nm))%nm)%nm + (3*st)%nm - 1);
     if (a < 0) a += nm;
     start = (start*a)%nm;
     start /= 30;
     return start;
 }
-
+ 
 llu findSum(llu st, llu en) {
     LL diff = (find(en) - find(st));
     if (diff < 0) diff += m;
     return diff;
 }
-
-
+ 
+ 
 int main () {
     int T;
     scanf("%d", &T);
@@ -48,4 +48,4 @@ int main () {
         }
         printf("%llu\n", cnt);
     }
-}   
+}
