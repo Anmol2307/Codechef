@@ -27,74 +27,81 @@ lli lcm (lli a, lli b) {
   return (lli)((a*b)/(lli)gcd(a,b));
 }
 
-int prime[1000000];
-vector <int> primes;
+#define N 1000005
 
-void sieve () {
-  for (int i = 2; i*i < 1000000; i++) {
-    if (!prime[i]) {
-      for (int j = 2*i; j < 1000000; j+=i) {
+vector<int> pfactors[N];
+vector <int> primes;
+int prime[N];
+int arr[N];
+int calc[N];
+int last[N];
+int dp[N];
+    
+void find_prime_sieve() {
+  for (int i = 2; i*i < N; i++) {
+    if (prime[i] == 0) {
+      for (int j = i*i; j < N; j += i) {
         prime[j] = 1;
       }
     }
   }
-  for (int i = 2; i < 1000000; i++) {
-    if (!prime[i]) primes.push_back(i);
+
+  for (int i = 2; i < N; i++) {
+    if  (prime[i] == 0) primes.push_back(i);
   }
 }
 
-
+void calulate_prime_factors () {
+  for(int i=2; i<=1000000; i++) {
+    int j=i;
+    for(int k=0; primes[k]*primes[k]<=j; k++) {
+      if(j%primes[k]==0){
+        pfactors[i].push_back(primes[k]);
+        while(j%primes[k]==0)j/=primes[k];
+      }
+    }
+    if(j>=2)pfactors[i].push_back(j);
+  }
+}
 
 int main () {
+  find_prime_sieve();
+  calulate_prime_factors();
   int t;
   inp(t);
-
+  
   while (t--) {
+    memset(dp,-1,sizeof(dp));
+    memset(calc,-1,sizeof(calc));
+    memset(last,-1,sizeof(last));
     int n;
     inp(n);
-
-    lli arr[n];
-    lli lc[n];
-    int dp[n];
-    // lli pro[n];
+    
     for (int i = 0; i < n; i++) {
-      scanf("%lli",&arr[i]);
+      inp(arr[i]);
+    } 
+  
+    for (int i = 0; i < pfactors[arr[0]].size(); i++) {
+      last[pfactors[arr[0]][i]] = 0;
     }
     
-    // pro[0] = arr[0];
-    // for (int i = 1; i < n; i++) {
-    //   pro[i] = pro[i-1]*arr[i];
-    // }
-    
-    dp[0] = 1;
-    lc[0] = arr[0];
-    int j = -1;
-    lli p = 1;
-    
-    // for (int i = 0; i < n; i++) {
-    //   printf("%lli ",pro[i]);
-    // }
-    // printf("\n");
-    int max_ending_here = 1;
-    int max_so_far = 1;
     for (int i = 1; i < n; i++) {
-      lli val = lcm(arr[i],lc[i-1]);
-      lli g = gcd(arr[i], lc[i-1]);
-      if (g == 1) {
-        max_ending_here++;
-        lc[i] = val;
+      int ma = -1;
+      for (int j = 0; j < pfactors[arr[i]].size(); j++) {
+        ma = max(ma,last[pfactors[arr[i]][j]]);
+        last[pfactors[arr[i]][j]] = i;
       }
-      else {
-        max_ending_here = 1;
-        lc[i] = arr[i];
-      }
-      if (max_ending_here > max_so_far) max_so_far = max_ending_here;
+      calc[i] = ma;
+    }
+    int ans = 0; 
+    dp[0] = 1;
+    
+    for (int i = 1; i < n; i++) {
+      dp[i] = min(dp[i-1] + 1,i-calc[i]);
+      ans = max(ans,dp[i]);
     }
 
-
-    if (max_so_far == 1) printf("-1\n");
-    else printf("%d\n",max_so_far);
-
-
+    if (ans == 1) printf("%d\n",-1);
+    else printf("%d\n",ans);
   }
 }
