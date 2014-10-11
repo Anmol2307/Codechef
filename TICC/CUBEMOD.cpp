@@ -21,5 +21,32 @@ int main () {
     lli a, b, p;
     scanf("%lli %lli %lli", &a, &b, &p);
     
+    lli count = 0;
+    lli i;
+    for (i = 1; i < p; i++) {
+      if ((i*i*i) % p == 1) {
+        count++;  
+      }
+    }
+
+    lli start = a/p;
+    lli end = b/p - 1;
+    lli sum = count*(end-start + 1);
+    
+    lli ev = (end+1)*p;
+    lli sv = start*p;
+    for (i = 1; ev + i <= b;i++) {
+      if ((i*i*i) % p == 1) {
+        sum++;
+      }
+    }
+
+    for (i = 1; sv + i < a; i++) {
+      if ((i*i*i) % p == 1) {
+        sum--;
+      }
+    }
+    
+    printf("%lli\n",sum);
   }
 }

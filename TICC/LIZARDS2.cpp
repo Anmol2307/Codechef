@@ -11,24 +11,26 @@ inline void inp(int &n ) {//fast input function
       n=n*sign;
 }
 typedef pair<int,int> pii;
+typedef long long int lli;
 
+lli gcd (lli a, lli b) {
+  while (b) {
+    return gcd(b,a%b);
+  }
+  return a;
+}
 
 int main () {
+  int t;
+  inp(t);
 
-  int count = 0;
-  for (int i = 1; i <= 100; i++) {
-    if ((i*i*i) % 31 == 1) {
-      printf("%d %d\n",i,i*i*i);
-      count++;
-    }
+  while (t--) {
+    lli n;
+    scanf("%lli", &n);
+
+    lli val = n*(n-1);
+    lli g = gcd(val,8);
+
+    printf("%lli/%lli\n",val/g,8/g);
   }
-  printf("%d\n\n",count);
-
-  // for (int i = 1; i <= 31; i++) {
-  //   if ((i*i*i) % 31 == 1) {
-  //     printf("%d\n",i*i*i);
-  //     count++;
-  //   }
-  // }
-
 }
