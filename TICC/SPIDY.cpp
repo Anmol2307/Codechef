@@ -24,11 +24,12 @@ void pre () {
   dp[2] = -1;
   dp[4] = -1;
   dp[6] = 0;
+  dp[8] = 1;
 
-  for (int i = 8; i < maxn; i+= 2) {
-    if (((i/2)%4)%3 == 0) dp[i] = 1;
-    else if ((i/2)%3 == 0) dp[i] = 0;
-    else dp[i] = -1;
+  for (int i = 10; i < maxn; i+= 2) {
+    if (dp[i-6] == 1) dp[i] = 1;
+    else if ((i-8)%6 == 0 || dp[i-8] == 1) dp[i] = 1;
+    else dp[i] = 0;
   }
 }
 
