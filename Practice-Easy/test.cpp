@@ -1,80 +1,162 @@
+#include <cmath>
+#include <ctime>
+#include <iostream>
+#include <string>
+#include <vector>
+#include <cstdio>
+#include <sstream>
+#include <algorithm>
+#include <cstdlib>
+#include <cstring>
+#include <map>
+#include <set>
+#include <queue>
+#include <cctype>
+#include <list>
+#include <stack>
+#include <fstream>
+#include <utility>
+#include <iomanip>
+#include <climits>
  
-long long mulmod(long long a,long long b,long long m)
-{
-  #define C 1000000000
-  if(a==0 || b==0) return 0;
-  if(a<C && b<C) return (a*b)%m;
-  
-  long long x=0;
-  while(b)
-  {
-    if(b & 1) {
-      x+=a;
-      if(x>=m) x-=m;
-    }
-    a<<=1;
-    if(a>=m) a-=m;
-    b>>=1;
-  }
-  return x;
-}
-  
-long long expmod(long long a,long long b,long long m)
-{
-  long long x=1,y=a;
-  while(b>0)
-  {
-    if(b & 1) x=mulmod(x,y,m);
-    y=mulmod(y,y,m);
-    b>>=1;
-  }
-  return x;
-}
+using namespace std;
+#define pb push_back
+#define all(s) s.begin(),s.end()
+#define f(i,a,b) for(int i=a;i<b;i++)
+#define F(i,a,b) for(int i=a;i>=b;i--)
+#define PI 3.1415926535897932384626433832795
+#define BIG_INF 7000000000000000000LL
+#define mp make_pair
+#define eps 1e-9
+#define si(n) scanf("%d",&n)
+#define sll(n) scanf("%lld",&n)
+#define mod 1000000007
+#define mm 10000000
+#define INF (1<<29)
+#define SET(a) memset(a,-1,sizeof(a))
+#define CLR(a) memset(a,0,sizeof(a))
+#define FILL(a,v) memset(a,v,sizeof(a))
+#define EPS 1e-9
+#define min3(a,b,c) min(a,min(b,c))
+#define max3(a,b,c) max(a,max(b,c))
+#define READ freopen("input.txt", "r", stdin)
+#define WRITE freopen("output.txt", "w", stdout)
  
-bool rabin_miller(long long n,int times)
+ 
+typedef long long int LL;
+ 
+string inttostring(int n)
 {
-  //Any n till 10^18 , if <10^9 ignore mulmod and do direct
-  if(n==2 || n==3) return true;
-  if(n < 5) return false;
-  if(!(n & 1)) return false;
-  
-  long long a,x,d=n-1;
-  int s=0;
-  
-  while(!(d & 1))
-  {
-    d>>=1;
-    s++;
-  }
-  
-  while(times--)
-  {
-    a=(((long long)rand())%(n-1))+1;
-    x=expmod(a,d,n);
-    if( x!=1 && x!=(n-1))
-    {
-      int flag=1;
-      for(int i=1;i<=s && flag;i++)
-      {
-        x=mulmod(x,x,n);
-        if(x==1) return false;
-        if(x == n-1) flag=0;
-      }
-      if(flag) return false;
-    }
-  }
-  return true;
+  stringstream a;
+  a<<n;
+  string A;
+  a>>A;
+  return A;
 }
  
-int main() {
+int stringtoint(string A)
+{
+  stringstream a;
+  a<<A;
+  int p;
+  a>>p;
+  return p;
+}
+ 
+inline void inp(int &n ) {//fast input function
+    n=0;
+    int ch=getchar(),sign=1;
+    while( ch < '0' || ch > '9' ){if(ch=='-')sign=-1; ch=getchar();}
+    while( ch >= '0' && ch <= '9' )
+        n=(n<<3)+(n<<1)+ ch-'0', ch=getchar();
+    n=n*sign;
+}
+ 
+///////////////////////////////////////////////////////////////////////////////////////////
+ 
+// prob = (total cost of subsets with atleast m colors)/(total number of substes with atleat m colous)
+ 
+long long int mypow(int a, int b) {
+  long long int ans = 1;
+  for (int i = 0; i < b; i++) {
+    ans *= a;
+  }
+  return ans;
+}
+ 
+int main () {
+  
   int t;
-  ll n;
-  scanf("%d",&t);
-  while(t--) {
-    scanf("%lld",&n);
-    if(n%2==0 && n>2) n--;
-    while(!rabin_miller(n,10)) n-=2;
-    printf("%lld\n",n);
+  inp(t);
+ 
+  while (t--) {
+    int n, m;
+    inp(n);inp(m);
+ 
+    vector <int> colors(n+1,0);
+    vector <int> cost(n+1,0);
+    int c=0;
+    for (int i = 0; i < n; i++) {
+      int x, y;
+      inp(x); inp(y);
+      if (colors[x] == 0) c++; 
+      colors[x]++;
+      cost[x] += y;
+    }
+    // Total number of subsets with atleast m colors 
+    long long int dp[c+1][c+1];
+    memset(dp,0,sizeof(dp));
+    for (int i = 0; i <= c; i++) {
+      dp[i][0] = 1;
+    }
+ 
+    
+ 
+    for (int i = 1; i <= c; i++) {
+      for (int j = 1; j <= c; j++) {
+        dp[i][j] = dp[i-1][j] + (dp[i-1][j-1]*(mypow(2,colors[i]) - 1));
+        
+      }
+    }
+    // for (int i = 1; i <= c; i++) {
+    //   for (int j = 1; j <= c; j++) {
+    //     printf("%d ",dp[i][j]);
+    //   }
+    //   printf("\n");
+    // }
+    // exit(0);
+ 
+    // Total cost of all the subsets with atlest m colors
+    long long int dp2[c+1][c+1];
+    for (int i = 0; i <= c; i++) {
+      for (int j = 0; j <= c; j++) {
+        if (i==0 || j==0) dp2[i][j] = 0;
+        else {
+          dp2[i][j] = dp2[i-1][j] + (dp2[i-1][j-1]*(mypow(2,colors[i]) - 1)  + dp[i-1][j-1]*cost[i]*(mypow(2,colors[i]-1)));
+        }
+      }
+    }
+ 
+    // for (int i = 1; i <= c; i++) {
+    //   for (int j = 1; j <= c; j++) {
+    //     printf("%d ",dp2[i][j]);
+    //   }
+    //   printf("\n");
+    // }
+    // exit(0);
+ 
+    long long int num = 0, den=0;
+    for (int i = m; i <= c; i++) {
+      num += dp2[c][i];
+      den += dp[c][i];
+    }
+    // printf("%d %d\n",num,den);
+    if (den != 0) {
+      double ans = (double)num/(double)den;
+      printf("%lf\n",ans);
+    }
+    else if (num ==0 || den == 0){
+      printf("%lf\n",(double)0);
+    }
   }
-  return 0;
-}
+} 
