@@ -13,58 +13,82 @@ inline void inp(int &n ) {//fast input function
 
 #define MOD 1000000007
 #define i64 long long
+#define lli long long int
+#define N 200002
 
-int power(int a,int k){
-    if(k == 0) return 1;
-    int ret = power(a,k/2);
-    ret = (ret*(i64)ret) % MOD;
-    if(k & 1){
-        ret = (a*(i64)ret) % MOD;
-    }
-    return ret;
+lli modpow(lli base, lli exp) {
+  lli result = 1;
+  while (exp > 0) {
+    if (exp & 1) result = (result * base) % MOD;
+    base = (base * base) % MOD;
+    exp >>= 1;
+  }
+  return result;
 }
+
+
+int arr[N];
+int tmp[N];
 
 int main () {
 
 	int t;
 	inp(t);
+  
+  tmp[0]=1;
+  for(int i=1;i<N;i++)
+    tmp[i]=(tmp[i-1]*2)%MOD;
+  for(int i=0;i<N;i++)
+  {
+    tmp[i]=(tmp[i]-1)%MOD;
+  }
 
 	while (t--) {
 		int n;
-		inp(n);
-
-		int arr[n];
-
+		scanf("%d",&n);
+    int ma = 0;
 		for (int i = 0; i < n; i++) {
 			inp(arr[i]);
-		}
+		  if (arr[i] > ma) ma = arr[i];
+    }
 
-		int ans = 0;
-		for (int d = -99; d < 100; d++) {
+		int ans = n;
+		for (int d = -100; d <= 100; d++) {
 
 			int sum[101];
-			memset(sum,0,sizeof(sum));
-			int dp[n];
-			for (int i = 0; i < n; i++) {
-				dp[i] = 1;
-			}
+			//lli dp[n];
 
-			int cur = 0;	
+      for (int i = 0; i <= 100; i++) {
+        sum[i] = 0;
+      }
+			
+   //    for (int i = 0; i < n; i++) {
+			// 	dp[i] = 1;
+			// }
+
+			// lli cur = 0;	
 			for (int j = 0; j < n; j++) {
-				if (arr[j] - d >= 1 && arr[j] - d <= 100) {
-					dp[j] = (sum[arr[j] - d] + 1)%MOD;
+				int val = 1;
+        if (arr[j] - d > 0 && arr[j] - d <= ma) {
+					val = (sum[arr[j] - d] + 1);
+          if (val > MOD) val %= MOD; 
 				}
-				sum[arr[j]] = (sum[arr[j]] + dp[j])%MOD;
-				cur = (cur + dp[j])%MOD;
-			}
-			ans = (ans + cur)%MOD;
+				sum[arr[j]] = (sum[arr[j]] + val);
+        if (sum[arr[j]] > MOD) sum[arr[j]] %= MOD;
+				// cur = (cur + val);
+        ans = ans + val;
+        // if (cur > MOD) cur %= MOD; 
+			   if (ans > MOD) ans %= MOD;
+      }
+			// ans = (ans + cur);
+      // if (ans > MOD) ans %= MOD;
 			ans -= n;	
-			ans = (ans + MOD)%MOD;
+			if (ans < 0) ans += MOD;
 		}
 
-		ans = (ans + n)%MOD;
-		ans = power(2,n) - 1 - ans;
-		ans = (ans + MOD)%MOD;
+		// ans = (ans + n)%MOD;
+		ans = tmp[n] - ans;
+    if (ans < 0) ans += MOD;
 		printf("%d\n",ans);
 	}
 }
